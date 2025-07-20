@@ -1,69 +1,87 @@
 name: Build Android and iOS App
 
-on: [push]
+on:
+  push:
+    branches:
+      - main  # You can change this to your working branch
 
 jobs:
   build:
-    runs-on: macos-latest  # Needed for iOS
+    runs-on: macos-latest
 
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 📦 Install Dependencies
         run: |
           npm install
           npm install -g @angular/cli @capacitor/cli
 
-      - name: Build Angular app
+      - name: 🔁 Auto-update version.json
         run: |
-          npm run build -- --configuration=production
-          ls -R dist
+          VERSION=$(date +%Y%m%d%H%M%S)
+          mkdir -p src/assets
+          echo "{ \"version\": \"$VERSION\" }" > src/assets/version.json
+          echo "🔖 Version updated to $VERSION"
 
-      - name: Add Capacitor Android and iOS platforms
+      - name: 🛠️ Build Angular App
+        run: npm run build -- --configuration production
+
+      - name: ➕ Add Capacitor Platforms
         run: |
-          npx cap add android
-          npx cap add ios
+          npx cap add android || echo "Android already added"
+          npx cap add ios || echo "iOS already added"
 
-      - name: Copy Web Assets
-        run: |
-          npx cap copy
+      - name: 📁 Copy Web to Native
+        run: npx cap copy
 
-      - name: Sync Capacitor platforms
-        run: |
-          npx cap sync
+      - name: 🔄 Sync Capacitor
+        run: npx cap sync
 
-      - name: Setup Android SDK
+      - name: 🧰 Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           jdk-version: '17'
 
-      - name: Build Android APK
+      - name: 📦 Build Android APK
         run: |
           cd android
           ./gradlew assembleDebug --no-daemon
 
-      - name: Upload Android APK
+      - name: ☁️ Upload Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: LoveMap
+          name: LoveMap-Android-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 1
 
-      - name: Build iOS app (Xcode project)
+      - name: 🍏 Build iOS App (Simulator Only)
         run: |
           cd ios/App
           xcodebuild -scheme App -workspace App.xcworkspace -configuration Debug -sdk iphonesimulator build CODE_SIGNING_ALLOWED=NO
 
-      - name: Upload iOS build output
+      - name: ☁️ Upload iOS Simulator Build
         uses: actions/upload-artifact@v4
         with:
-          name: LoveMap
+          name: LoveMap-iOS-Build
           path: ios/App/build/
           retention-days: 1
+
+      - name: 🌐 Upload APK to transfer.sh (temporary link)
+        run: |
+          curl --upload-file ./android/app/build/outputs/apk/debug/app-debug.apk https://transfer.sh/app-debug.apk > apk_url.txt
+          echo "🔗 APK Download URL:"
+          cat apk_url.txt
+
+      - name: 📤 Save APK URL to Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-Download-URL
+          path: apk_url.txt

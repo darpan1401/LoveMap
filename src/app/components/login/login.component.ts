@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Capacitor } from '@capacitor/core';
+import { AuthService } from '../../services/auth.service';
+import { supabase } from '../../supabase'; 
 
 @Component({
   selector: 'app-login',
@@ -22,26 +24,34 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   async ngOnInit() {
+    // Wait for Supabase auth to sync
     setTimeout(async () => {
-  const { data } = await this.authService.getUser();
-  if (data?.user) {
-    this.router.navigate(['/app-profile-setup']);
-  }
-}, 100);
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        this.router.navigate(['/app-profile-setup']);
+      }
+    }, 200);
   }
 
-  async loginWithGoogle() {
-    this.isLoading = true;
-    this.errorMessage = '';
-    try {
-      await this.authService.loginWithGoogle();
-      // After login, Supabase will redirect to same origin
-      // ngOnInit will handle redirection
-    } catch (error: any) {
-      this.errorMessage = error.message || 'Google login failed.';
-      this.isLoading = false;
+  async loginWithGoogle(): Promise<{ error: any }> {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin + '/app-profile-setup',
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent'
+      }
     }
+  });
+
+  if (error) {
+    console.error('Google login error:', error.message);
   }
+
+  return { error };
+}
+
 
   openPhoneForm() {
     this.showPhoneForm = true;
@@ -86,6 +96,6 @@ export class LoginComponent implements OnInit {
   submitOtp() {
     const otp = this.otpDigits.join('');
     console.log('OTP submitted:', otp);
-    // TODO: Implement OTP verification logic
+    // 🔒 TODO: Add Supabase phone verification if implemented
   }
 }
