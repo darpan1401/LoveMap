@@ -1,0 +1,27 @@
+name: Build Android App
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      
+      # Install dependencies and build
+      - run: npm install
+      - run: npm run build -- --configuration=production
+      
+      # Setup Android
+      - uses: android-actions/setup-android@v3
+      
+      # Build APK
+      - run: npx cap add android
+      - run: cd android && ./gradlew assembleDebug
+      
+      # Upload APK artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
