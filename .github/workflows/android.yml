@@ -1,8 +1,11 @@
 name: Build Android App
+
 on: [push]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,31 +24,28 @@ jobs:
       - name: Build Angular app
         run: |
           npm run build -- --configuration=production
-          ls -R dist # Verify build output
+          ls -R dist # Debugging
 
-      - name: Setup Android
+      - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           jdk-version: '17'
 
-      - name: Prepare Android assets directory
+      - name: Add Capacitor Android platform
         run: |
-          mkdir -p android/app/src/main/assets/
-          touch android/app/src/main/assets/.gitkeep
-
-      - name: Handle Capacitor Android platform
-        run: |
-          if [ -d "android" ]; then
-            rm -rf android
-          fi
-          
           npx cap add android
-          npx cap sync android --deployment
 
-      - name: Verify copied files
+      - name: Copy Web Assets
+        run: |
+          npx cap copy android
+
+      - name: Sync Capacitor with Android
+        run: |
+          npx cap sync android
+
+      - name: Verify Capacitor Assets
         run: |
           ls -la android/app/src/main/assets/
-          cat android/app/src/main/assets/capacitor.config.json
 
       - name: Build APK
         run: |
