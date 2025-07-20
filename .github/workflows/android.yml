@@ -55,7 +55,7 @@ jobs:
           cd android
           ./gradlew assembleDebug --no-daemon
 
-      - name: ☁️ Upload Android APK
+      - name: ☁️ Upload Android APK as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: LoveMap-Android-APK
@@ -74,9 +74,9 @@ jobs:
           path: ios/App/build/
           retention-days: 1
 
-      - name: 🌐 Upload APK to transfer.sh (temporary link)
+      - name: 🌐 Upload APK to file.io (temporary link)
         run: |
-          curl --upload-file ./android/app/build/outputs/apk/debug/app-debug.apk https://transfer.sh/app-debug.apk > apk_url.txt
+          curl -F "file=@android/app/build/outputs/apk/debug/app-debug.apk" https://file.io -o apk_url.txt
           echo "🔗 APK Download URL:"
           cat apk_url.txt
 
