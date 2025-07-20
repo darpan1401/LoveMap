@@ -4,26 +4,40 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '20.x'  # Updated to Node 20
-      
-      # Install dependencies
-      - run: npm install
-      - run: npm run build -- --configuration=production
-      
-      # Android setup
-      - uses: android-actions/setup-android@v3
-      
-      # Build APK
-      - run: npx cap add android
-      - run: cd android && ./gradlew assembleDebug
-      
-      # UPDATED artifact upload (using v4+)
-      - uses: actions/upload-artifact@v4
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install -g @angular/cli @capacitor/cli
+
+      - name: Build Angular app
+        run: npm run build -- --configuration=production
+
+      - name: Setup Android
+        uses: android-actions/setup-android@v3
+        with:
+          jdk-version: '17'
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 1  # Auto-delete after 1 day to save space
-          
+          retention-days: 1
+          if-no-files-found: error
