@@ -1,0 +1,99 @@
+<div class="login-wrapper">
+  <div class="login-container">
+    <!-- Left: Avatar Ring -->
+    <div class="avatar-ring">
+      <div class="outer-circle"></div>
+      <div class="inner-circle"></div>
+
+      <div class="orbit">
+        <div class="orbit-inner">
+          <img src="https://i.pravatar.cc/150?img=2" class="orbit-avatar" style="top: 0%; left: 50%;" />
+          <img src="https://i.pravatar.cc/150?img=3" class="orbit-avatar" style="top: 25%; left: 87.5%;" />
+          <img src="https://i.pravatar.cc/150?img=4" class="orbit-avatar" style="top: 75%; left: 87.5%;" />
+          <img src="https://i.pravatar.cc/150?img=5" class="orbit-avatar" style="top: 100%; left: 50%;" />
+          <img src="https://i.pravatar.cc/150?img=6" class="orbit-avatar" style="top: 75%; left: 12.5%;" />
+          <img src="https://i.pravatar.cc/150?img=7" class="orbit-avatar" style="top: 25%; left: 12.5%;" />
+        </div>
+      </div>
+
+      <div class="avatar-center">
+        <img src="https://i.pravatar.cc/150?img=1" alt="Center Avatar" />
+      </div>
+    </div>
+
+    <!-- Right: Content -->
+    <div class="login-content">
+      <h2 class="headline">
+        Let's meet new<br />
+        people around corner
+      </h2>
+
+      <!-- Default Login Options -->
+      <div *ngIf="!showPhoneForm && !showOtpForm" class="buttons">
+        <button class="btn primary" (click)="openPhoneForm()">
+          <img src="call.svg" class="icon" alt="callicon" />
+          Login with Phone
+        </button>
+
+        <button class="btn outline" (click)="loginWithGoogle()">
+          <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google" />
+          Login with Google
+        </button>
+      </div>
+
+      <!-- Phone Number Form -->
+      <div *ngIf="showPhoneForm && !showOtpForm" class="phone-form">
+        <label for="phone">Enter Phone Number</label>
+        <div class="phone-input-container">
+          <div class="country-code">+91</div>
+          <input
+            id="phone"
+            type="tel"
+            maxlength="10"
+            [(ngModel)]="phoneNumber"
+            placeholder="9876543210"
+            (keypress)="validateNumber($event)"
+          />
+        </div>
+        <button 
+          class="btn primary" 
+          (click)="submitPhone()" 
+          [disabled]="phoneNumber.length !== 10"
+        >
+          Send OTP
+        </button>
+      </div>
+
+      <!-- OTP Form -->
+      <div *ngIf="showOtpForm" class="otp-form">
+        <label>Enter OTP sent to +91 {{phoneNumber}}</label>
+        <div class="otp-container">
+          <input
+            *ngFor="let digit of otpDigits; let i = index"
+            type="text"
+            maxlength="1"
+            [(ngModel)]="otpDigits[i]"
+            (keyup)="moveToNext($event, i)"
+            (keydown)="moveToPrev($event, i)"
+            class="otp-box"
+          />
+        </div>
+        <button 
+          class="btn primary" 
+          (click)="submitOtp()" 
+          [disabled]="otpDigits.join('').length !== 6"
+        >
+          Verify OTP
+        </button>
+      </div>
+
+      <p class="terms">
+        By continuing, you agree to our <a href="#" class="terms-link">Terms & Conditions</a>
+      </p>
+
+      <p class="footer">
+        Developed and managed by Panveyo
+      </p>
+    </div>
+  </div>
+</div>
