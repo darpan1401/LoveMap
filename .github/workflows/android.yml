@@ -1,10 +1,10 @@
-name: Build Android App
+name: Build Android and iOS App
 
 on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest  # Needed for iOS
 
     steps:
       - name: Checkout code
@@ -24,37 +24,46 @@ jobs:
       - name: Build Angular app
         run: |
           npm run build -- --configuration=production
-          ls -R dist # Debugging
+          ls -R dist
+
+      - name: Add Capacitor Android and iOS platforms
+        run: |
+          npx cap add android
+          npx cap add ios
+
+      - name: Copy Web Assets
+        run: |
+          npx cap copy
+
+      - name: Sync Capacitor platforms
+        run: |
+          npx cap sync
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           jdk-version: '17'
 
-      - name: Add Capacitor Android platform
-        run: |
-          npx cap add android
-
-      - name: Copy Web Assets
-        run: |
-          npx cap copy android
-
-      - name: Sync Capacitor with Android
-        run: |
-          npx cap sync android
-
-      - name: Verify Capacitor Assets
-        run: |
-          ls -la android/app/src/main/assets/
-
-      - name: Build APK
+      - name: Build Android APK
         run: |
           cd android
           ./gradlew assembleDebug --no-daemon
 
-      - name: Upload APK
+      - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: app-debug-android
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 1
+
+      - name: Build iOS app (Xcode project)
+        run: |
+          cd ios/App
+          xcodebuild -scheme App -workspace App.xcworkspace -configuration Debug -sdk iphonesimulator build CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload iOS build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-debug-build
+          path: ios/App/build/
           retention-days: 1
