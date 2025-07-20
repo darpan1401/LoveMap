@@ -21,6 +21,7 @@
     "@capacitor/cli": "^7.4.2",
     "@capacitor/core": "^7.4.2",
     "@capacitor/ios": "^7.4.2",
+    "@capacitor/live-updates": "^0.4.0",
     "@supabase/supabase-js": "^2.52.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
