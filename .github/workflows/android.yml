@@ -28,21 +28,24 @@ jobs:
         with:
           jdk-version: '17'
 
+      - name: Prepare Android assets directory
+        run: |
+          mkdir -p android/app/src/main/assets/
+          touch android/app/src/main/assets/.gitkeep
+
       - name: Handle Capacitor Android platform
         run: |
-          # Remove old android folder if exists
           if [ -d "android" ]; then
             rm -rf android
           fi
           
-          # Recreate platform
           npx cap add android
-          npx cap sync android
+          npx cap sync android --deployment
 
-      - name: Verify web assets
+      - name: Verify copied files
         run: |
-          ls -la dist/findLove/browser
           ls -la android/app/src/main/assets/
+          cat android/app/src/main/assets/capacitor.config.json
 
       - name: Build APK
         run: |
