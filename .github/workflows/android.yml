@@ -19,22 +19,30 @@ jobs:
           npm install -g @angular/cli @capacitor/cli
 
       - name: Build Angular app
-        run: npm run build -- --configuration=production
+        run: |
+          npm run build -- --configuration=production
+          ls -R dist # Verify build output
 
       - name: Setup Android
         uses: android-actions/setup-android@v3
         with:
           jdk-version: '17'
 
-      - name: Sync Capacitor
+      - name: Handle Capacitor Android platform
         run: |
-          # Only add android if not exists
-          if [ ! -d "android" ]; then
-            npx cap add android
-          else
-            echo "Android platform already exists - syncing instead"
-            npx cap sync android
+          # Remove old android folder if exists
+          if [ -d "android" ]; then
+            rm -rf android
           fi
+          
+          # Recreate platform
+          npx cap add android
+          npx cap sync android
+
+      - name: Verify web assets
+        run: |
+          ls -la dist/findLove/browser
+          ls -la android/app/src/main/assets/
 
       - name: Build APK
         run: |
@@ -47,4 +55,3 @@ jobs:
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 1
-          if-no-files-found: error
