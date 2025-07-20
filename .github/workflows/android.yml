@@ -26,8 +26,15 @@ jobs:
         with:
           jdk-version: '17'
 
-      - name: Add Android platform
-        run: npx cap add android
+      - name: Sync Capacitor
+        run: |
+          # Only add android if not exists
+          if [ ! -d "android" ]; then
+            npx cap add android
+          else
+            echo "Android platform already exists - syncing instead"
+            npx cap sync android
+          fi
 
       - name: Build APK
         run: |
