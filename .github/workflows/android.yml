@@ -7,21 +7,23 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: '20.x'  # Updated to Node 20
       
-      # Install dependencies and build
+      # Install dependencies
       - run: npm install
       - run: npm run build -- --configuration=production
       
-      # Setup Android
+      # Android setup
       - uses: android-actions/setup-android@v3
       
       # Build APK
       - run: npx cap add android
       - run: cd android && ./gradlew assembleDebug
       
-      # Upload APK artifact
-      - uses: actions/upload-artifact@v3
+      # UPDATED artifact upload (using v4+)
+      - uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 1  # Auto-delete after 1 day to save space
+          
