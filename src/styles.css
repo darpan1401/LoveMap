@@ -120,3 +120,17 @@ body {
     background-color: white;
   }
 }
+
+
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent; /* Removes blue tap highlight */
+  outline: none; /* Removes focus ring */
+}
+
+* {
+  -webkit-user-select: none;
+  user-select: none;
+}
