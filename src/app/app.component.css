@@ -1,83 +1,62 @@
-/* PWA Install Banner */
-.pwa-install-banner {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #ffffff;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-  padding: 15px;
-  z-index: 1000;
-  animation: slideUp 0.3s ease-out;
-  border-top: 1px solid #eee;
-}
-
-.pwa-install-content {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.app-icon img {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-}
-
-.install-text h3 {
-  margin: 0;
-  font-size: 1rem;
-  color: #333;
-}
-
-.install-text p {
-  margin: 3px 0 0;
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.install-actions {
-  margin-left: auto;
-  display: flex;
-  gap: 10px;
-}
-
-.install-btn {
-  background: #1976d2;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.dismiss-btn {
-  background: transparent;
-  color: #666;
-  border: 1px solid #ddd;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-/* Offline Indicator */
-.offline-indicator {
+/* Fullscreen PWA Install Screen */
+.pwa-fullscreen-install {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background: #ff9800;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
   color: white;
   text-align: center;
-  padding: 8px;
-  font-size: 0.9rem;
-  z-index: 1000;
 }
 
-/* Animation */
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+.pwa-install-container {
+  max-width: 300px;
+  padding: 20px;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.tagline {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+.install-btn {
+  background: white;
+  color: #ff6b8b;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.install-btn:active {
+  transform: scale(0.95);
+}
+
+.small-text {
+  font-size: 0.8rem;
+  opacity: 0.8;
 }

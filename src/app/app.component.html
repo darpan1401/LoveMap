@@ -1,25 +1,23 @@
-<app-splash-screen *ngIf="showSplash"></app-splash-screen>
+<!-- Only show splash screen if not mobile browser -->
+<app-splash-screen *ngIf="showSplash && !isMobileBrowser()"></app-splash-screen>
 
-<!-- PWA Install Prompt -->
-<div *ngIf="showInstallBtn" class="pwa-install-banner">
-  <div class="pwa-install-content">
-    <div class="app-icon">
-      <img src="assets/icons/icon-192x192.png" alt="App icon">
+<!-- PWA Install Screen (shown only on mobile browsers) -->
+<div *ngIf="isMobileBrowser() && !isRunningAsPWA()" class="pwa-fullscreen-install">
+  <div class="pwa-install-container">
+    <div class="branding">
+      <img src="assets/icons/icon-192x192.png" alt="LoveMap" class="logo">
+      <h1>LoveMap</h1>
+      <p class="tagline">Find Love Around Corners</p>
     </div>
-    <div class="install-text">
-      <h3>Install findLove</h3>
-      <p>Find Love Around Corners</p>
-    </div>
-    <div class="install-actions">
-      <button class="install-btn" (click)="installPWA()">Install</button>
-      <button class="dismiss-btn" (click)="dismissInstall()">Not Now</button>
+    
+    <div class="install-section">
+      <button class="install-btn" (click)="installPWA()">
+        Install App
+      </button>
+      <p class="small-text">For better experience</p>
     </div>
   </div>
 </div>
 
-<!-- Offline Indicator -->
-<div *ngIf="!isOnline" class="offline-indicator">
-  ⚠️ You're offline - some features may be limited
-</div>
-
-<router-outlet></router-outlet>
+<!-- Normal app content (hidden on mobile browsers) -->
+<router-outlet *ngIf="!isMobileBrowser() || isRunningAsPWA()"></router-outlet>

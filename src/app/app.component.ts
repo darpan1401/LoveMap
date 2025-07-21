@@ -17,26 +17,31 @@ export class AppComponent implements OnInit {
   isOnline = navigator.onLine;
   showInstallBtn = false;
   dismissedInstall = false;
+  isMobile = this.detectMobile();
 
-  constructor(private versionCheck: VersionCheckService) {}
+  constructor(private versionCheck: VersionCheckService) {
+    // Check for previous dismissal
+    this.dismissedInstall = localStorage.getItem('pwaDismissed') === 'true';
+  }
 
   ngOnInit() {
     this.versionCheck.checkVersion();
-    
-    // Check if app is running as PWA
-    if (this.isRunningAsPWA()) {
-      console.log('Running as PWA');
+
+    // Only show splash screen if not mobile or is PWA
+    if (!this.isMobile || this.isRunningAsPWA()) {
+      setTimeout(() => {
+        this.showSplash = false;
+      }, 3000);
     } else {
-      this.setupPWAInstallPrompt();
+      this.showSplash = false; // Hide splash immediately on mobile browser
     }
 
-    // Track network status
-    window.addEventListener('online', () => this.updateOnlineStatus(true));
-    window.addEventListener('offline', () => this.updateOnlineStatus(false));
+    this.setupPWAInstallPrompt();
+    this.setupNetworkListeners();
+  }
 
-    setTimeout(() => {
-      this.showSplash = false;
-    }, 3000);
+  private detectMobile(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 
   private isRunningAsPWA(): boolean {
@@ -45,17 +50,23 @@ export class AppComponent implements OnInit {
   }
 
   private setupPWAInstallPrompt() {
+    // Skip if not mobile or already running as PWA
+    if (!this.isMobile || this.isRunningAsPWA()) return;
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       this.deferredPrompt = e;
       
-      // Only show if not previously dismissed
       if (!this.dismissedInstall) {
-        setTimeout(() => {
-          this.showInstallBtn = true;
-        }, 5000); // Show after 5 seconds
+        // Show immediately for mobile as per requirements
+        this.showInstallBtn = true;
       }
     });
+  }
+
+  private setupNetworkListeners() {
+    window.addEventListener('online', () => this.updateOnlineStatus(true));
+    window.addEventListener('offline', () => this.updateOnlineStatus(false));
   }
 
   installPWA() {
@@ -64,24 +75,20 @@ export class AppComponent implements OnInit {
       this.deferredPrompt.userChoice.then((choiceResult: any) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('User accepted install');
-          this.showInstallBtn = false;
         }
-        this.deferredPrompt = null;
+        this.showInstallBtn = false;
+        this.dismissedInstall = true;
+        localStorage.setItem('pwaDismissed', 'true');
       });
+    } else {
+      // Fallback instructions for browsers that don't support the prompt
+      alert('To install this app, look for "Add to Home Screen" in your browser\'s menu.');
     }
   }
 
-  dismissInstall() {
-    this.showInstallBtn = false;
-    this.dismissedInstall = true;
-    // Store dismissal in localStorage to remember user's choice
-    localStorage.setItem('pwaDismissed', 'true');
-  }
 
   private updateOnlineStatus(isOnline: boolean) {
     this.isOnline = isOnline;
-    if (!isOnline) {
-      console.log('App is offline');
-    }
+    // Add any offline-specific logic here
   }
 }
