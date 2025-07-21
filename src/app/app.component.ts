@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { SplashScreenComponent } from './shared/splash-screen/splash-screen.component';
 import { CommonModule } from '@angular/common';
 import { VersionCheckService } from './services/version-check.service';
+import { Platform } from '@angular/cdk/platform';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +19,15 @@ export class AppComponent implements OnInit {
   showInstallBtn = false;
   dismissedInstall = false;
   isDevMode = isDevMode();
+  isIosSafari = false; // Added for iOS Safari detection
 
-  constructor(private versionCheck: VersionCheckService) {
+  constructor(
+    private versionCheck: VersionCheckService,
+    private platform: Platform
+  ) {
     this.dismissedInstall = localStorage.getItem('pwaDismissed') === 'true';
     console.log('Development Mode:', this.isDevMode);
+    this.detectIosSafari(); // Initialize iOS Safari detection
   }
 
   ngOnInit() {
@@ -41,6 +47,14 @@ export class AppComponent implements OnInit {
         this.showSplash = false;
       }, 3000);
     }
+  }
+
+  // iOS Safari detection
+  private detectIosSafari(): void {
+    const ua = navigator.userAgent;
+    const iOS = this.platform.IOS || /iPad|iPhone|iPod/.test(ua);
+    const webkit = /WebKit/.test(ua);
+    this.isIosSafari = iOS && webkit && !/CriOS|OPiOS/.test(ua);
   }
 
   isMobileBrowser(): boolean {
