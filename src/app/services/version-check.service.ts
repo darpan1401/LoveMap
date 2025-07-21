@@ -11,6 +11,11 @@ export class VersionCheckService {
     this.initVersionChecks();
   }
 
+  private isMobileDevice(): boolean {
+    const ua = navigator.userAgent;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
+  }
+
   private initVersionChecks() {
     if (!this.sw.isEnabled) {
       console.log('Service Worker not enabled');
@@ -29,7 +34,7 @@ export class VersionCheckService {
       first() // Only take the first update event
     ).subscribe(event => {
       console.log('Version update event:', event);
-      this.promptUpdate();
+      this.handleUpdate();
     });
 
     // Handle unrecoverable state
@@ -54,18 +59,30 @@ export class VersionCheckService {
     }
   }
 
+  private handleUpdate() {
+    if (this.isMobileDevice()) {
+      this.promptUpdate();
+    } else {
+      // For desktop/large screens, update automatically
+      this.applyUpdate();
+    }
+  }
+
   private promptUpdate() {
     if (this.updatePromptShown) return;
     
     this.updatePromptShown = true;
     
-    // In a real app, consider using a proper dialog/modal component
     const shouldUpdate = confirm('A new version is available. Would you like to update now?');
     if (shouldUpdate) {
-      this.sw.activateUpdate().then(() => {
-        document.location.reload();
-      });
+      this.applyUpdate();
     }
+  }
+
+  private applyUpdate() {
+    this.sw.activateUpdate().then(() => {
+      document.location.reload();
+    });
   }
 
   private promptReload() {
