@@ -1,0 +1,13 @@
+<div class="notification-container">
+  <div
+    *ngFor="let note of notifications"
+    class="notification-toast"
+    [@slideInOut]
+  >
+    <div class="toast-content">
+      <h4>{{ note.title || 'Notification' }}</h4>
+      <p>{{ note.body }}</p>
+    </div>
+    <button class="dismiss-btn" (click)="dismiss(note.id)">×</button>
+  </div>
+</div>

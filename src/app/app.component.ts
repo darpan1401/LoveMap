@@ -4,11 +4,12 @@ import { SplashScreenComponent } from './shared/splash-screen/splash-screen.comp
 import { CommonModule } from '@angular/common';
 import { VersionCheckService } from './services/version-check.service';
 import { Platform } from '@angular/cdk/platform';
+import { NotificationComponent } from './shared/notification/notification.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SplashScreenComponent, CommonModule],
+  imports: [RouterOutlet, SplashScreenComponent, CommonModule,NotificationComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

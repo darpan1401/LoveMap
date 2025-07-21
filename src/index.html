@@ -25,7 +25,27 @@
 
 
 <!-- darpan@lovemap -->
-
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "d1cb5c10-6914-4923-b272-d9d9ccd2b2a4",
+      safari_web_id: "YOUR_SAFARI_WEB_ID", // Optional for iOS
+      allowLocalhostAsSecureOrigin: true, // For development
+      autoRegister: true,
+      notifyButton: {
+        enable: true,
+      },
+      persistNotification: true, // Keep notifications visible
+      serviceWorkerParam: { scope: '/onesignal/' },
+      serviceWorkerPath: 'onesignal/OneSignalSDKWorker.js'
+    });
+    
+    // Recommended: Add this for better PWA support
+    await OneSignal.Session.setAppId("d1cb5c10-6914-4923-b272-d9d9ccd2b2a4");
+  });
+</script>
 
   <link rel="manifest" href="manifest.webmanifest">
 </head>
