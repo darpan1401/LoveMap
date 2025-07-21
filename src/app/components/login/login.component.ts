@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Capacitor } from '@capacitor/core';
 import { AuthService } from '../../services/auth.service';
 import { supabase } from '../../supabase'; 
 
