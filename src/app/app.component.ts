@@ -12,83 +12,102 @@ import { VersionCheckService } from './services/version-check.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  showSplash = true;
+  showSplash = false;
   deferredPrompt: any;
   isOnline = navigator.onLine;
   showInstallBtn = false;
   dismissedInstall = false;
-  isMobile = this.detectMobile();
 
   constructor(private versionCheck: VersionCheckService) {
-    // Check for previous dismissal
     this.dismissedInstall = localStorage.getItem('pwaDismissed') === 'true';
   }
 
   ngOnInit() {
-    this.versionCheck.checkVersion();
+  console.log('User Agent:', navigator.userAgent);
+  console.log('Is Mobile Browser:', this.isMobileBrowser());
+  console.log('Is Running as PWA:', this.isRunningAsPWA());
 
-    // Only show splash screen if not mobile or is PWA
-    if (!this.isMobile || this.isRunningAsPWA()) {
-      setTimeout(() => {
-        this.showSplash = false;
-      }, 3000);
-    } else {
-      this.showSplash = false; // Hide splash immediately on mobile browser
-    }
+  this.versionCheck.checkVersion();
+  this.setupPWAInstallPrompt();
+  this.setupNetworkListeners();
 
-    this.setupPWAInstallPrompt();
-    this.setupNetworkListeners();
+  if (!this.isMobileBrowser() || this.isRunningAsPWA()) {
+    this.showSplash = true;
+    setTimeout(() => {
+      this.showSplash = false;
+    }, 3000);
+  }
+}
+
+
+  /**
+   * Detect mobile browser
+   */
+  isMobileBrowser(): boolean {
+  const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
+  const isTouchDevice = /android|iphone|ipad|ipod|tablet|mobile|iemobile|blackberry/i.test(ua.toLowerCase());
+  const isSmallScreen = window.innerWidth <= 820; 
+  return isTouchDevice && isSmallScreen;
+}
+
+
+
+  /**
+   * Detect if app is running as PWA (standalone)
+   */
+  isRunningAsPWA(): boolean {
+    return window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
   }
 
-  private detectMobile(): boolean {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  }
-
-  private isRunningAsPWA(): boolean {
-    return window.matchMedia('(display-mode: standalone)').matches || 
-           (window.navigator as any).standalone;
-  }
-
+  /**
+   * Handle the beforeinstallprompt event
+   */
   private setupPWAInstallPrompt() {
-    // Skip if not mobile or already running as PWA
-    if (!this.isMobile || this.isRunningAsPWA()) return;
+    if (!this.isMobileBrowser() || this.isRunningAsPWA()) return;
 
-    window.addEventListener('beforeinstallprompt', (e) => {
+    window.addEventListener('beforeinstallprompt', (e: any) => {
       e.preventDefault();
       this.deferredPrompt = e;
-      
+
       if (!this.dismissedInstall) {
-        // Show immediately for mobile as per requirements
         this.showInstallBtn = true;
       }
     });
   }
 
-  private setupNetworkListeners() {
-    window.addEventListener('online', () => this.updateOnlineStatus(true));
-    window.addEventListener('offline', () => this.updateOnlineStatus(false));
-  }
-
+  /**
+   * Trigger the install prompt manually
+   */
   installPWA() {
     if (this.deferredPrompt) {
       this.deferredPrompt.prompt();
+
       this.deferredPrompt.userChoice.then((choiceResult: any) => {
         if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted install');
+          console.log('User accepted the install prompt');
+        } else {
+          console.log('User dismissed the install prompt');
         }
+
         this.showInstallBtn = false;
         this.dismissedInstall = true;
         localStorage.setItem('pwaDismissed', 'true');
       });
     } else {
-      // Fallback instructions for browsers that don't support the prompt
-      alert('To install this app, look for "Add to Home Screen" in your browser\'s menu.');
+      alert('To install this app, use "Add to Home Screen" from your browser menu.');
     }
   }
 
+  /**
+   * Monitor online/offline state
+   */
+  private setupNetworkListeners() {
+    window.addEventListener('online', () => this.updateOnlineStatus(true));
+    window.addEventListener('offline', () => this.updateOnlineStatus(false));
+  }
 
   private updateOnlineStatus(isOnline: boolean) {
     this.isOnline = isOnline;
-    // Add any offline-specific logic here
+    // You can show offline toast or banner if needed
   }
 }

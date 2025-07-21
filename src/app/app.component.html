@@ -1,23 +1,22 @@
-<!-- Only show splash screen if not mobile browser -->
-<app-splash-screen *ngIf="showSplash && !isMobileBrowser()"></app-splash-screen>
-
-<!-- PWA Install Screen (shown only on mobile browsers) -->
+<!-- Show install screen only if on mobile/tablet and not PWA -->
 <div *ngIf="isMobileBrowser() && !isRunningAsPWA()" class="pwa-fullscreen-install">
   <div class="pwa-install-container">
-    <div class="branding">
-      <img src="assets/icons/icon-192x192.png" alt="LoveMap" class="logo">
-      <h1>LoveMap</h1>
-      <p class="tagline">Find Love Around Corners</p>
-    </div>
-    
-    <div class="install-section">
-      <button class="install-btn" (click)="installPWA()">
-        Install App
-      </button>
-      <p class="small-text">For better experience</p>
-    </div>
+    <img src="assets/icons/icon-192x192.png" alt="LoveMap" class="logo" />
+    <h1>LoveMap</h1>
+    <p class="tagline">Find Love Around Corners</p>
+    <p class="about">
+      LoveMap is a modern dating app that helps you find love near you.  
+      Install the app for the best experience!
+    </p>
+
+    <button class="install-btn" (click)="installPWA()">
+      Install App
+    </button>
   </div>
 </div>
 
-<!-- Normal app content (hidden on mobile browsers) -->
-<router-outlet *ngIf="!isMobileBrowser() || isRunningAsPWA()"></router-outlet>
+<!-- Show full app only if laptop/desktop OR already running as PWA -->
+<ng-container *ngIf="!isMobileBrowser() || isRunningAsPWA()">
+  <app-splash-screen *ngIf="showSplash"></app-splash-screen>
+  <router-outlet *ngIf="!showSplash"></router-outlet>
+</ng-container>

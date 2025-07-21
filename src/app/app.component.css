@@ -1,21 +1,20 @@
-/* Fullscreen PWA Install Screen */
 .pwa-fullscreen-install {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
+  background: linear-gradient(to bottom right, #ff6b8b, #ffe0e9);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000;
-  color: white;
+  flex-direction: column;
+  padding: 2rem;
   text-align: center;
+  z-index: 99999;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .pwa-install-container {
   max-width: 300px;
-  padding: 20px;
 }
 
 .logo {
@@ -23,40 +22,39 @@
   height: 100px;
   border-radius: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
-  font-size: 2.2rem;
+  font-size: 2rem;
   margin: 0 0 10px;
   font-weight: 700;
 }
 
 .tagline {
-  font-size: 1.2rem;
-  margin-bottom: 40px;
-  opacity: 0.9;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.about {
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+  line-height: 1.4;
 }
 
 .install-btn {
   background: white;
   color: #ff6b8b;
   border: none;
-  padding: 15px 30px;
-  border-radius: 30px;
-  font-size: 1.1rem;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
 }
 
 .install-btn:active {
   transform: scale(0.95);
-}
-
-.small-text {
-  font-size: 0.8rem;
-  opacity: 0.8;
 }
