@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { interval } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class VersionCheckService {
+  private updatePromptShown = false;
+
   constructor(private sw: SwUpdate) {
     this.initVersionChecks();
   }
@@ -21,11 +24,12 @@ export class VersionCheckService {
     interval(6 * 60 * 60 * 1000).subscribe(() => this.checkForUpdate());
 
     // Listen for available updates
-    this.sw.versionUpdates.subscribe(event => {
+    this.sw.versionUpdates.pipe(
+      filter(event => event.type === 'VERSION_READY'),
+      first() // Only take the first update event
+    ).subscribe(event => {
       console.log('Version update event:', event);
-      if (event.type === 'VERSION_READY') {
-        this.promptUpdate();
-      }
+      this.promptUpdate();
     });
 
     // Handle unrecoverable state
@@ -51,6 +55,10 @@ export class VersionCheckService {
   }
 
   private promptUpdate() {
+    if (this.updatePromptShown) return;
+    
+    this.updatePromptShown = true;
+    
     // In a real app, consider using a proper dialog/modal component
     const shouldUpdate = confirm('A new version is available. Would you like to update now?');
     if (shouldUpdate) {
