@@ -1,5 +1,11 @@
+<!-- iOS Manual Install Banner -->
+<div *ngIf="showIosInstallBanner" class="ios-install-banner">
+  <p>📱 To install LoveMap, tap <strong>Share</strong> and then <strong>"Add to Home Screen"</strong>.</p>
+  <button (click)="dismissIosBanner()">Dismiss</button>
+</div>
+
 <!-- Show install screen only if on mobile/tablet, not PWA, and not in development -->
-<div *ngIf="isMobileBrowser() && !isRunningAsPWA() && !isDevMode" class="pwa-fullscreen-install">
+<div *ngIf="isMobileBrowser() && !isRunningAsPWA() && !isDevMode && !showIosInstallBanner" class="pwa-fullscreen-install">
   <div class="pwa-install-container">
     <img src="icons/icon-192x192.png" alt="LoveMap" class="logo" />
     <h1>LoveMap</h1>
@@ -15,10 +21,7 @@
   </div>
 </div>
 
-<!-- Show full app if:
-     - Not mobile browser OR 
-     - Running as PWA OR 
-     - In development mode -->
+<!-- Main App Content -->
 <ng-container *ngIf="!isMobileBrowser() || isRunningAsPWA() || isDevMode">
   <router-outlet *ngIf="!showSplash"></router-outlet>
   <app-splash-screen *ngIf="showSplash"></app-splash-screen>
