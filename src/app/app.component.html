@@ -20,6 +20,6 @@
      - Running as PWA OR 
      - In development mode -->
 <ng-container *ngIf="!isMobileBrowser() || isRunningAsPWA() || isDevMode">
-  <app-splash-screen *ngIf="showSplash"></app-splash-screen>
   <router-outlet *ngIf="!showSplash"></router-outlet>
+  <app-splash-screen *ngIf="showSplash"></app-splash-screen>
 </ng-container>

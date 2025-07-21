@@ -112,7 +112,7 @@ currentLoadingMessage = this.loadingMessages[0];
       id: 10,
       type: 'selection',
       question: "What's your ideal weekend?",
-      options: ['Outdoor adventures', 'Netflix & chill', 'Social gatherings', 'Exploring new places', 'Reading', 'Working out']
+      options: ['Outdoors', 'Netflix & chill', 'Social gatherings', 'Exploring places', 'Reading', 'Working out']
     },
     {
       id: 11,
@@ -216,10 +216,10 @@ async ngOnInit() {
       Weekly: 'fa-solid fa-walking',
       Monthly: 'fa-solid fa-calendar-alt',
       Rarely: 'fa-solid fa-bed',
-      'Outdoor adventures': 'fa-solid fa-hiking',
+      Outdoors: 'fa-solid fa-hiking',
       'Netflix & chill': 'fa-solid fa-tv',
       'Social gatherings': 'fa-solid fa-glass-cheers',
-      'Exploring new places': 'fa-solid fa-map-marked-alt',
+      'Exploring places': 'fa-solid fa-map-marked-alt',
       'Reading': 'fa-solid fa-book-reader',
       'Working out': 'fa-solid fa-weight-hanging',
       'Hindu': 'fa-solid fa-om',
