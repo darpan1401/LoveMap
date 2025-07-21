@@ -1,24 +1,28 @@
-<!-- Show install screen only if on mobile/tablet, not PWA, and not in development -->
-<div *ngIf="isMobileBrowser() && !isRunningAsPWA() && !isDevMode" class="pwa-fullscreen-install">
+<!-- Show install screen if: Mobile browser, not in PWA, not in dev, and not dismissed -->
+<div
+  *ngIf="isMobileBrowser() && !isRunningAsPWA() && !isDevMode && !dismissedInstall"
+  class="pwa-fullscreen-install"
+>
   <div class="pwa-install-container">
     <img src="icons/icon-192x192.png" alt="LoveMap" class="logo" />
     <h1>LoveMap</h1>
     <p class="tagline">Find Love Around Corners</p>
     <p class="about">
-      LoveMap is a modern dating app that helps you find love near you.  
+      LoveMap is a modern dating app that helps you find love near you.
       Install the app for the best experience!
     </p>
 
     <button class="install-btn" (click)="installPWA()">
       Install App
     </button>
+    <p *ngIf="isIosSafari" class="ios-tip">
+      On iPhone, tap the <strong>Share</strong> button <img src="assets/share-icon.png" width="16" />
+      and then select <strong>Add to Home Screen</strong>.
+    </p>
   </div>
 </div>
 
-<!-- Show full app if:
-     - Not mobile browser OR 
-     - Running as PWA OR 
-     - In development mode -->
+<!-- Show full app if: Not mobile OR Running as PWA OR in development -->
 <ng-container *ngIf="!isMobileBrowser() || isRunningAsPWA() || isDevMode">
   <router-outlet *ngIf="!showSplash"></router-outlet>
   <app-splash-screen *ngIf="showSplash"></app-splash-screen>

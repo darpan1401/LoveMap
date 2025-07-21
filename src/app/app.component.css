@@ -163,6 +163,12 @@ h1 {
   }
 }
 
+.ios-tip {
+  font-size: 14px;
+  margin-top: 1rem;
+  color: #666;
+}
+
 
 
 /* Dark mode support */
