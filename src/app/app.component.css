@@ -163,30 +163,6 @@ h1 {
   }
 }
 
-/* iOS Install Banner */
-.ios-install-banner {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #fef3c7;
-  color: #92400e;
-  font-weight: 500;
-  padding: 1rem;
-  text-align: center;
-  border-top: 1px solid #fcd34d;
-  z-index: 10000;
-}
-
-.ios-install-banner button {
-  background: #92400e;
-  color: white;
-  border: none;
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
 
 
 /* Dark mode support */

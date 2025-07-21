@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   isDevMode = isDevMode();
   showIosInstallBanner = false;
 
+
   constructor(private versionCheck: VersionCheckService) {
     this.dismissedInstall = localStorage.getItem('pwaDismissed') === 'true';
     console.log('Development Mode:', this.isDevMode);
@@ -47,18 +48,13 @@ export class AppComponent implements OnInit {
   isMobileBrowser(): boolean {
     const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
     const isTouchDevice = /android|iphone|ipad|ipod|tablet|mobile|iemobile|blackberry/i.test(ua.toLowerCase());
-    const isSmallScreen = window.innerWidth <= 820;
+    const isSmallScreen = window.innerWidth <= 820; 
     return isTouchDevice && isSmallScreen;
   }
 
   isRunningAsPWA(): boolean {
-    return window.matchMedia('(display-mode: standalone)').matches ||
+    return window.matchMedia('(display-mode: standalone)').matches || 
            (window.navigator as any).standalone === true;
-  }
-
-  isIos(): boolean {
-    const ua = window.navigator.userAgent.toLowerCase();
-    return /iphone|ipad|ipod/.test(ua) && !this.isRunningAsPWA();
   }
 
   private setupPWAInstallPrompt() {
@@ -72,42 +68,37 @@ export class AppComponent implements OnInit {
         this.showInstallBtn = true;
       }
     });
-
-    // Handle iOS manually
-    if (this.isIos() && !this.dismissedInstall) {
-      this.showIosInstallBanner = true;
-    }
   }
+
+  isIos(): boolean {
+  const ua = window.navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(ua) && !window.matchMedia('(display-mode: standalone)').matches;
+}
 
   installPWA() {
-    if (this.isIos()) {
-      this.showIosInstallBanner = true;
-      return;
-    }
-
-    if (this.deferredPrompt) {
-      this.deferredPrompt.prompt();
-      this.deferredPrompt.userChoice.then((choiceResult: any) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-        } else {
-          console.log('User dismissed the install prompt');
-        }
-
-        this.showInstallBtn = false;
-        this.dismissedInstall = true;
-        localStorage.setItem('pwaDismissed', 'true');
-      });
-    } else {
-      alert('To install this app, use "Add to Home Screen" from your browser menu.');
-    }
+  if (this.isIos()) {
+    alert('To install this app on your iPhone, tap the Share icon and then "Add to Home Screen".');
+    return;
   }
 
-  dismissIosBanner() {
-    this.showIosInstallBanner = false;
-    this.dismissedInstall = true;
-    localStorage.setItem('pwaDismissed', 'true');
+  if (this.deferredPrompt) {
+    this.deferredPrompt.prompt();
+    this.deferredPrompt.userChoice.then((choiceResult: any) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+
+      this.showInstallBtn = false;
+      this.dismissedInstall = true;
+      localStorage.setItem('pwaDismissed', 'true');
+    });
+  } else {
+    alert('To install this app, use "Add to Home Screen" from your browser menu.');
   }
+}
+
 
   private setupNetworkListeners() {
     window.addEventListener('online', () => this.updateOnlineStatus(true));
