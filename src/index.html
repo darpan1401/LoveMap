@@ -4,29 +4,42 @@
   <meta charset="utf-8">
   <title>loveMap</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Viewport settings for proper scaling and preventing zoom -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- Prevent auto-formatting of phone numbers, emails, and addresses -->
+  <meta name="format-detection" content="telephone=no, email=no, address=no">
+
+  <!-- Theme & PWA Support -->
+  <meta name="theme-color" content="transparent">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes"/>
+
+  <!-- iOS PWA default text styling override -->
+  <style>
+    html, body, input, textarea, select, button, a {
+      color: #ffffff !important; /* Change to your default font color */
+      -webkit-appearance: none;
+      text-decoration: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    * {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    a {
+      color: inherit !important;
+    }
+  </style>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <!-- Inside <head> -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-
-<meta name="theme-color" content="transparent">
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-
-<!-- Modern (Android/Chrome) -->
-<meta name="mobile-web-app-capable" content="yes"/>
-
-<!-- iOS (still useful for some older Safari versions) -->
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
-
-
-<!-- darpan@lovemap -->
-
-
   <link rel="manifest" href="manifest.webmanifest">
 </head>
 <body>
