@@ -68,25 +68,35 @@ export class AppComponent implements OnInit {
     });
   }
 
+  isIos(): boolean {
+  const ua = window.navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(ua) && !window.matchMedia('(display-mode: standalone)').matches;
+}
+
   installPWA() {
-    if (this.deferredPrompt) {
-      this.deferredPrompt.prompt();
-
-      this.deferredPrompt.userChoice.then((choiceResult: any) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-        } else {
-          console.log('User dismissed the install prompt');
-        }
-
-        this.showInstallBtn = false;
-        this.dismissedInstall = true;
-        localStorage.setItem('pwaDismissed', 'true');
-      });
-    } else {
-      alert('To install this app, use "Add to Home Screen" from your browser menu.');
-    }
+  if (this.isIos()) {
+    alert('To install this app on your iPhone, tap the Share icon and then "Add to Home Screen".');
+    return;
   }
+
+  if (this.deferredPrompt) {
+    this.deferredPrompt.prompt();
+    this.deferredPrompt.userChoice.then((choiceResult: any) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+
+      this.showInstallBtn = false;
+      this.dismissedInstall = true;
+      localStorage.setItem('pwaDismissed', 'true');
+    });
+  } else {
+    alert('To install this app, use "Add to Home Screen" from your browser menu.');
+  }
+}
+
 
   private setupNetworkListeners() {
     window.addEventListener('online', () => this.updateOnlineStatus(true));
